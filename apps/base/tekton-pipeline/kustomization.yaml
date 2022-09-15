@@ -19,9 +19,30 @@ patches:
     kind: HorizontalPodAutoscaler
 
 patchesStrategicMerge:
+# PodSecurityPolicy is deprecated in the current kind cluster.
 - |-
   $patch: delete
   apiVersion: policy/v1beta1
   kind: PodSecurityPolicy
   metadata:
     name: tekton-pipelines
+
+# See https://github.com/tektoncd/pipeline/issues/2207.
+- |-
+  $patch: delete
+  apiVersion: admissionregistration.k8s.io/v1
+  kind: ValidatingWebhookConfiguration
+  metadata:
+    name: config.webhook.pipeline.tekton.dev
+- |-
+  $patch: delete
+  apiVersion: admissionregistration.k8s.io/v1
+  kind: ValidatingWebhookConfiguration
+  metadata:
+    name: validation.webhook.pipeline.tekton.dev
+- |-
+  $patch: delete
+  apiVersion: admissionregistration.k8s.io/v1
+  kind: MutatingWebhookConfiguration
+  metadata:
+    name: webhook.pipeline.tekton.dev
